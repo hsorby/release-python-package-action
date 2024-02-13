@@ -3,10 +3,18 @@ name: 'Create release of Python package'
 description: 'Create a release and upload built python package to PyPI.'
 
 inputs:
-  release-repository:  # id of input
+  release-repository:
     description: 'Specify the repository where releases are made from.'
     required: true
     default: 'empty/nowhere'
+  pypi-package-name:
+    description: 'Specify the name of the python package on PyPI.org.'
+    required: true
+    default: 'not-a-name'
+  github-token:
+    description: 'Specify the GitHub token with contents and id-token write permission.'
+    required: true
+    default: '&&&'
   release-heading:
     description: 'Specify the heading for the release.'
     required: false
@@ -26,7 +34,7 @@ runs:
       id: create_release
       uses: KaiWedekind/create-release@v1.0.0
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        GITHUB_TOKEN: ${{ inputs.github-token }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
         release_name: ${{ inputs.release-heading }}
@@ -34,4 +42,4 @@ runs:
       uses: peter-evans/repository-dispatch@v3
       with:
         event-type: release-created
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}"}'
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}", "pypi_package_name": "${{ inputs.pypi-package-name }}", "github_token": "${{ inputs.github-token }}"}'
