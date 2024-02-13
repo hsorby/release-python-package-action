@@ -1,0 +1,37 @@
+name: 'Create release of Python package'
+
+description: 'Create a release and upload built python package to PyPI.'
+
+inputs:
+  release-repository:  # id of input
+    description: 'Specify the repository where releases are made from.'
+    required: true
+    default: 'empty/nowhere'
+  release-heading:
+    description: 'Specify the heading for the release.'
+    required: false
+    default: '${{ github.ref }}'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      shell: bash
+      run: echo "$GITHUB_CONTEXT"
+    - name: Create Release
+      id: create_release
+      uses: KaiWedekind/create-release@v1.0.0
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ inputs.release-heading }}
+    - name: Send event
+      uses: peter-evans/repository-dispatch@v3
+      with:
+        event-type: release-created
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}"}'
