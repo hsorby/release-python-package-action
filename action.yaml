@@ -26,18 +26,18 @@ runs:
       id: create_release
       uses: KaiWedekind/create-release@v1.0.0
       env:
-        GITHUB_TOKEN: ${{ github.event.token }} # This token is provided by Actions, you do not need to create your own token
+        GITHUB_TOKEN: ${{ github.token }} # This token is provided by Actions, you do not need to create your own token
       with:
         tag_name: ${{ github.ref }}
         release_name: ${{ inputs.release-heading }}
     - name: "Generate release changelog"
       uses: heinrichreimer/action-github-changelog-generator@v2.3
       with:
-        token: ${{ github.event.token }}
+        token: ${{ github.token }}
     - name: Add changelog to release
       uses: irongut/EditRelease@v1.2.0
       with:
-        token: ${{ github.event.token }}
+        token: ${{ github.token }}
         id: ${{ steps.create_release.outputs.id }}
         files: "CHANGELOG.md"
     - name: Send event
