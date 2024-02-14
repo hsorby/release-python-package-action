@@ -1,4 +1,4 @@
-name: Deploy library
+name: Build and deploy library
 
 on:
   repository_dispatch:
