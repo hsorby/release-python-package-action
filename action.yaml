@@ -42,4 +42,4 @@ runs:
       uses: peter-evans/repository-dispatch@v3
       with:
         event-type: release-created
-        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}", "pypi_package_name": "${{ inputs.pypi-package-name }}", "github_token": "${{ inputs.github-token }}"}'
+        client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}", "pypi_package_name": "${{ inputs.pypi-package-name }}"}'

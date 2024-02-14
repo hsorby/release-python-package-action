@@ -11,10 +11,10 @@ jobs:
       - name: "Generate release changelog"
         uses: heinrichreimer/action-github-changelog-generator@v2.3
         with:
-          token: ${{ github.event.client_payload.github_token }}
+          token: ${{ github.event.token }}
       - name: Add changelog to release
         uses: irongut/EditRelease@v1.2.0
         with:
-          token: ${{ github.event.client_payload.github_token }}
+          token: ${{ github.event.token }}
           id: ${{ github.event.client_payload.release_id }}
           files: "CHANGELOG.md"
