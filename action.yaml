@@ -18,11 +18,11 @@ runs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Create Release
-        run: |
-          gh release create "${{ github.ref_name }}" \
-              --repo="$GITHUB_REPOSITORY" \
-              --title="${{ inputs.release-heading }}" \
-              --generate-notes
+      run: |
+        gh release create "${{ github.ref_name }}" \
+            --repo="$GITHUB_REPOSITORY" \
+            --title="${{ inputs.release-heading }}" \
+            --generate-notes
     - name: Send event
       uses: peter-evans/repository-dispatch@v3
       with:
