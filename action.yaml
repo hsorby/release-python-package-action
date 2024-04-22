@@ -10,7 +10,7 @@ inputs:
   release-heading:
     description: 'Specify the heading for the release.'
     required: false
-    default: '${{ github.ref }}'
+    default: '${{ github.ref_name }}'
 
 runs:
   using: "composite"
@@ -18,23 +18,14 @@ runs:
     - name: Checkout
       uses: actions/checkout@v4
     - name: Create Release
-      id: create_release
-      uses: KaiWedekind/create-release@v1.0.0
-      env:
-        GITHUB_TOKEN: ${{ github.token }} # This token is provided by Actions, you do not need to create your own token
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ inputs.release-heading }}
-    - name: "Generate release changelog"
-      uses: heinrichreimer/action-github-changelog-generator@v2.3
-      with:
-        token: ${{ github.token }}
-    - name: Add changelog to release
-      uses: irongut/EditRelease@v1.2.0
-      with:
-        token: ${{ github.token }}
-        id: ${{ steps.create_release.outputs.id }}
-        files: "CHANGELOG.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ github.ref_name }}
+        run: |
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${{ inputs.release-heading }}" \
+              --generate-notes
     - name: Send event
       uses: peter-evans/repository-dispatch@v3
       with:
