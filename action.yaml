@@ -19,6 +19,8 @@ runs:
       uses: actions/checkout@v4
     - name: Create Release
       shell: bash
+      env:
+        GH_TOKEN: ${{ github.token }}
       run: |
         gh release create "${{ github.ref_name }}" \
             --repo="$GITHUB_REPOSITORY" \
