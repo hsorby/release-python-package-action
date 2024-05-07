@@ -35,6 +35,7 @@ runs:
       if: inputs.run-tests == 'unittest'
       shell: bash
       run: |
+        pip install -e .
         python -m unittest discover -s tests/
     - name: Build
       id: build
