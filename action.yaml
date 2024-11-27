@@ -52,4 +52,4 @@ runs:
       env:
         name: pypi
         url: https://pypi.org/p/${{ inputs.pypi-package-name }}
-      uses: pypa/gh-action-pypi-publish@release/v1
+      uses: pypa/gh-action-pypi-publish@release/v1.11
