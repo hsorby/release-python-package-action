@@ -35,13 +35,13 @@ Example action file for your repository::
   jobs:
     build-and-release-package:
       if: github.repository == 'cmlibs-python/cmlibs.maths'
-      runs-on: ubuntu-20.04
+      runs-on: ubuntu-24.04
       name: Release package
       permissions:
         contents: write
         id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
       steps:
         - name: Release Python package
-          uses: hsorby/release-python-package-action@v1
+          uses: hsorby/release-python-package-action@v2
           with:
             pypi-package-name: cmlibs.maths
