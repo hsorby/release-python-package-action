@@ -22,7 +22,7 @@ runs:
     - name: Checkout
       uses: actions/checkout@v6
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: 3.x
     - name: Install dependencies
@@ -59,7 +59,7 @@ runs:
             --title="${{ inputs.release-heading }}" \
             --generate-notes
     - name: Send event
-      uses: peter-evans/repository-dispatch@v3
+      uses: peter-evans/repository-dispatch@v4
       with:
         event-type: release-created
         client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}", "pypi_package_name": "${{ inputs.pypi-package-name }}"}'
