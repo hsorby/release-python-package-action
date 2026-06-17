@@ -10,7 +10,6 @@ inputs:
   release-heading:
     description: 'Specify the heading for the release.'
     required: false
-    default: '${{ github.ref_name }}'
   run-tests:
     description: 'Specify if tests should be run, unittest currently only support.'
     required: false
@@ -59,7 +58,22 @@ runs:
       shell: bash
       run: |
         twine upload dist/*
-        
+
+    - name: Resolve release heading
+      id: resolve_heading
+      shell: bash
+      run: |
+        if [ -n "${{ inputs.release-heading }}" ]; then
+          HEADING="${{ inputs.release-heading }}"
+        elif [ -n "${{ inputs.tag }}" ]; then
+          HEADING="${{ inputs.tag }}"
+        else
+          HEADING="${GITHUB_REF_NAME}"
+        fi
+
+        echo "heading=$HEADING"
+        echo "heading=$HEADING" >> "$GITHUB_OUTPUT"
+    
     - name: Create Release
       shell: bash
       env:
@@ -67,7 +81,7 @@ runs:
       run: |
         gh release create "${{ inputs.tag || github.ref_name }}" \
             --repo="$GITHUB_REPOSITORY" \
-            --title="${{ inputs.release-heading }}" \
+            --title="${{ steps.resolve_heading.outputs.heading }}" \
             --generate-notes
     - name: Send event
       uses: peter-evans/repository-dispatch@v4
