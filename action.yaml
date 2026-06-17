@@ -15,46 +15,57 @@ inputs:
     description: 'Specify if tests should be run, unittest currently only support.'
     required: false
     default: 'off'
+  tag:
+    description: 'Explicitly set the tag for versioning the wheel and release title.'
+    required: false
 
 runs:
   using: "composite"
   steps:
     - name: Checkout
       uses: actions/checkout@v6
+
     - name: Set up Python
       uses: actions/setup-python@v6
       with:
         python-version: 3.x
+        
     - name: Install dependencies
       shell: bash
       run: |
         python -m pip install --upgrade pip
         pip install setuptools wheel build twine
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
     - name: Test
       if: inputs.run-tests == 'unittest'
       shell: bash
       run: |
         pip install -e .
         python -m unittest discover -s tests/
+        
     - name: Build
       id: build
       shell: bash
+      env:
+        SETUPTOOLS_SCM_PRETEND_VERSION: ${{ inputs.tag }}
       run: |
         python --version
         python -m build --wheel .
         echo "dist content:"
         ls dist/
+        
     - name: Publish Release
       shell: bash
       run: |
         twine upload dist/*
+        
     - name: Create Release
       shell: bash
       env:
         GH_TOKEN: ${{ github.token }}
       run: |
-        gh release create "${{ github.ref_name }}" \
+        gh release create "${{ inputs.tag || github.ref_name }}" \
             --repo="$GITHUB_REPOSITORY" \
             --title="${{ inputs.release-heading }}" \
             --generate-notes
